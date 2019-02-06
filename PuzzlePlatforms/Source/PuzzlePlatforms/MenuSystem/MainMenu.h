@@ -13,7 +13,6 @@ UCLASS()
 class PUZZLEPLATFORMS_API UMainMenu : public UMenuWidget
 {
 	GENERATED_BODY()
-
 public:
 	UMainMenu(const FObjectInitializer & ObjectInitializer);
 
