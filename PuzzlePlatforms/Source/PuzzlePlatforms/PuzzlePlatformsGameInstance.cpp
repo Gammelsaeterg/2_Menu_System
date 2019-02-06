@@ -29,7 +29,8 @@ UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitiali
 void UPuzzlePlatformsGameInstance::Init()
 {
 	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
-	if (Subsystem != nullptr) {
+	if (Subsystem != nullptr) 
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Found subsystem %s"), *Subsystem->GetSubsystemName().ToString());
 		SessionInterface = Subsystem->GetSessionInterface();
 		if (SessionInterface.IsValid()) {
@@ -94,11 +95,13 @@ void UPuzzlePlatformsGameInstance::OnDestroySessionComplete(FName SessionName, b
 
 void UPuzzlePlatformsGameInstance::CreateSession()
 {
-	if (SessionInterface.IsValid()) {
+	if (SessionInterface.IsValid()) 
+	{
 		FOnlineSessionSettings SessionSettings;
-		SessionSettings.bIsLANMatch = true;
+		SessionSettings.bIsLANMatch = false;
 		SessionSettings.NumPublicConnections = 2;
 		SessionSettings.bShouldAdvertise = true;
+		SessionSettings.bUsesPresence = true;
 
 		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 	}
@@ -133,7 +136,8 @@ void UPuzzlePlatformsGameInstance::RefreshServerList()
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	if (SessionSearch.IsValid())
 	{
-		//SessionSearch->bIsLanQuery = true;
+		SessionSearch->MaxSearchResults = 100;
+		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 		UE_LOG(LogTemp, Warning, TEXT("Starting Find Session"));
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
@@ -174,7 +178,8 @@ void UPuzzlePlatformsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJ
 	if (!SessionInterface.IsValid()) return;
 
 	FString Address;
-	if (!SessionInterface->GetResolvedConnectString(SessionName, Address)) {
+	if (!SessionInterface->GetResolvedConnectString(SessionName, Address)) 
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Could not get connect string."));
 		return;
 	}
